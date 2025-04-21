@@ -1,0 +1,24 @@
+Approximately 6 million chrome extensions installs have hidden tracking code are risky having capabilities like: 
+• Access cookies, including sensitive headers (e.g., 'Authorization') 
+• Monitor user browsing behavior 
+• Modify search providers (and results) 
+• Inject and execute remote scripts on visited pages via iframes 
+• Activate advanced tracking remotely 
+
+And these extensions don't show up on Chrome Web Store searches, and can only be installed if the user has the direct URL. 
+ 
+These kind of extensions are private software like internal company tools or add-ons still under development. the threat actors might be using them to evade detection while aggressively pushing them through ads and malicious sites. 
+ 
+Check your infrastructure from these extensions using below KQL. 
+ 
+ 
+let chromeextensions= externaldata(extension_id:string) 
+[h@'https://lnkd.in/dzwmv3bh'] 
+with (format='csv', ignoreFirstRecord=true); 
+DeviceFileEvents 
+| where ActionType == "FileCreated" or ActionType == "FileModified" 
+| where FileName endswith ".crx" 
+| extend ExtensionIDVersion = tostring(split(FileName, '.')[0]) 
+| extend ExtensionID = tolower(split(ExtensionIDVersion, '_')[0]) 
+| summarize arg_max(Timestamp, *) by DeviceName, ExtensionID 
+| join chromeextensions on $left.ExtensionID == $right.extension_id
