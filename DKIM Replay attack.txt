@@ -1,0 +1,31 @@
+DKIM Replay attack
+
+The Hackers sent real emails from “no-reply@accounts.google.com" which are fully verified, signed but those are spoofed.
+The Victims are providing the creds as this is legit.
+
+Surprisingly it passes DKIM Signature checks. the mail states subpoena from law enforcement asking for content present in google account
+the user urges to click on google sites, before “sites[.]goggle[.]com” allows user to host subdomains and it use to support arbitrary scripts.
+
+The attacker used email message has the "Signed by" header set to "accounts[.]google[.]com" on checking its having a "Mailed by" header with a completely unrelated domain ("fwd-04-1.fwd[.]privateemail[.]com").
+
+This activity has been characterized as a DKIM replay attack, where the attacker first creates a Google Account for a newly created domain ("me@<domain>") and then a Google OAuth application with the name that includes the entire content of the phishing message.
+Now they grant their OAuth app access to their domain "This generates a 'Security Alert' message from Google, sent to their 'me@...' email address. then the Google will generate the email, where it's a signed with a valid DKIM key and passes all the checks.
+The attacker then proceeds to forward the same message from an Outlook account keeping the DKIM signature intact, thus causing the message to bypass email security filters.
+
+Ref:https://thehackernews.com/2025/04/phishers-exploit-google-sites-and-dkim.html
+
+Check below your infra using below KQL.
+
+let MessageIDs=
+EmailEvents
+| where SenderFromAddress contains "no-reply@accounts.google.com"
+| where Subject == @"Security alert"
+| where EmailDirection == "Inbound"
+| where LatestDeliveryLocation == "Inbox/folder"
+| where tostring(parse_json(AuthenticationDetails).SPF) == "pass" and
+tostring(parse_json(AuthenticationDetails).DKIM) == "pass" and
+tostring(parse_json(AuthenticationDetails).DMARC) == "pass"
+| project NetworkMessageId;
+EmailUrlInfo
+| where NetworkMessageId has_any(MessageIDs)
+| distinct UrlDomain
