@@ -1,0 +1,7 @@
+let clickfix=externaldata(Filename: string, SHA256:string)[h"https://raw.githubusercontent.com/saidineshkintali/Threat-Hunting-MDE/refs/heads/main/clickfix.csv"]
+clickfix
+| invoke FileProfile("SHA256", 1000)
+| project Filename, SHA256, GlobalPrevalence, GlobalFirstSeen, GlobalLastSeen
+| Sort by GlobalPrevalence desc
+
+https://www.securonix.com/blog/analyzing-phaltblyx-how-fake-bsods-and-trusted-build-tools-are-used-to-construct-a-malware-infection/
