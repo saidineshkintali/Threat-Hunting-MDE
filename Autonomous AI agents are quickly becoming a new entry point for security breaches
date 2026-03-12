@@ -1,0 +1,12 @@
+Recent Autonomous AI agents are quickly becoming a new entry point for security breaches. Few organisations have uncovered multiple malicious campaigns
+aimed at OpenClaw (previously known as Moltbot and Clawdbot), an open‑source framework for AI agents. These attacks are being propagated through ClawHub, 
+the public marketplace for OpenClaw skills.
+
+KQL Detection rule to identify Openclaw installations:
+
+let commandline = dynamic(['install' 'openclaw']);
+DeviceProcessEvents
+| where Timestamp > ago(6h)
+| where (InitiatingProcessFileName contains "node" and InitiatingProcessCommandLine has_any (commandline))
+ or ProcessCommandLine contains "https://lnkd.in/gtihedFE"
+| project Timestamp,ActionType, DeviceName, AccountUpn,InitiatingProcessFileName, InitiatingProcessCommandLine
