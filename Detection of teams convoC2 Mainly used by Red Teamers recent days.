@@ -1,0 +1,12 @@
+Detection of teams convoC2 Mainly used by Red Teamers recent days.
+
+Basically it causes out bound requests to C2 Server, exfiltrates command outputs from Adaptive Cards images URLs and inserting data into hidden span tags in
+Microsoft teams conservations.The fact that the victim only sends http queries to Microsoft servers and the antivirus doesn't examine MS teams log files and in 
+absence of direct connection between the victim and attacker in this case its very difficult to detect.
+
+
+CloudAppEvents
+| where Timestamp > ago(1h)
+| where Application contains "Microsoft Teams"
+| where ActionType contains "AppInstalled"
+| where parse_json(RawEventData)["AddOnName"] == 'Workflows'
