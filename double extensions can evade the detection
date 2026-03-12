@@ -1,0 +1,9 @@
+Here's an custom query is very helpful to detect the files with double extensions and most common method to deliver the malware because
+the file with double extensions can evade the detection, using those kind of file can serve to malware injections, remote access and mainly used in phishing. 
+ 
+let file_extensions = dynamic([".js", ".cs", ".ps", ".ping" , ".ps1", ".ws",".exe", ".zip", ".sh", ".bat", ".vbs", ".cmd",".ink", ".reg"]);
+DeviceFileEvents
+| where FileName matches regex @".*\.[^.]+\.[^.]+$"
+| extend extension = tostring(split("FileName", ".")[-1])
+| extend Lastextension = strcat(".", extension)
+| where Lastextension in(file_extensions)
