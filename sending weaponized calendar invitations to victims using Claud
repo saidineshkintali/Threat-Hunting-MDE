@@ -1,0 +1,12 @@
+In recent days, attackers have been sending weaponized calendar invitations to victims. When the victim opens the event, the device becomes 
+silently compromised through Claude extensions without requiring any user interaction.
+
+The browser plugins and Claude desktop extensions are not simple passive add‑ons; they operate as active integration components that mediate interactions between Claude’s language model and the host operating system
+
+Ref: https://lnkd.in/gkWJ_SET
+
+Below is the Detection KQL to monitor:
+
+DeviceProcessEvents
+| where Timestamp > ago(12h)
+| where InitiatingProcessFileName contains "claude"and FileName has_any ("cmd.exe" "powershell.exe" "bash" "zsh" "python" "osascript")
