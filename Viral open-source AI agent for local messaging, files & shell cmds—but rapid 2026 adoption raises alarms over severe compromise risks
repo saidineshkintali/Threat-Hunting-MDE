@@ -1,0 +1,16 @@
+🚨 OpenClaw (ex-Clawdbot/Moltbot): Viral open-source AI agent for local messaging, files & shell cmds—but rapid 2026 adoption raises alarms over
+severe compromise risks! 🔒
+
+Below is KQL to detect the pressence in your org.
+
+DeviceFileEvents
+| where Timestamp > ago(30d)
+| where FileName has_any ("moltbot.json", "clawd.json", "clawbot.json")
+ or FolderPath has_any ("/.clawdbot/", "/.moltbot/", "/.openclaw/")
+| project Timestamp, DeviceName, ActionType, FileName, FolderPath, InitiatingProcessCommandLine
+| union (
+ DeviceProcessEvents
+ | where Timestamp > ago(7d)
+ | where ProcessCommandLine has_any ("clawd", "moltbot", "openclaw")
+ | project Timestamp, DeviceName, ActionType, FileName, FolderPath, ProcessCommandLine, AccountName
+)
