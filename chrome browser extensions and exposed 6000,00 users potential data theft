@@ -1,0 +1,13 @@
+Recently these is an large scale attack ha compromised multiple chrome browser extensions and exposed 6000,00 users potential data theft.
+
+Attack Mechanism the extensions contains two files "worker.js" and "content.js" Initially worker.js communicates with command & control server (C&C) it downloads configuration data and register event listeners.
+Next, the content.js will collect and exfiltrate the data like Facebook access tokens, cookies etc., to C&C Server.
+In this the malicious code targets Facebook domains mainly the ad users, it assists the advisor to bypass MFA and CAPTCHA using Code.
+
+Here is the Query to Check:
+
+let extensions = externaldata(Malicious_Files: string)[@"https://lnkd.in/dy4zvJAw"] with (format="csv", ignoreFirstRecord = True);
+let maliciousextensions  =(extensions | where isnotempty(Malicious_Files) | distinct Malicious_Files);
+DeviceEvents
+| where ActionType == "FileCreated" and FileName endswith ".crx" and FileName in ("worker.js", "content.js")
+| where FileName has_any (maliciousextensions)
