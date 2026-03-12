@@ -1,0 +1,13 @@
+Recently Apache Tomcat release three vulnerabilities 
+
+-CVE-2025-55752 - Remote Code Execution on misconfigured Instances.
+-CVE-2025-55754 - Console hijacking on Windows.
+-CVE-2025-61795 - DOS 
+
+To find unpatched device on your infra user below KQL: 
+
+DeviceProcessEvents
+| where InitiatingProcessVersionInfoProductName has_any('Apache Tomcat')
+| summarize arg_max(Timestamp, *) by DeviceName
+| join DeviceInfo on DeviceName
+| where IsInternetFacing == true and isnotempty(PublicIP)
