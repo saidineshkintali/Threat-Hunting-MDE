@@ -1,0 +1,12 @@
+NTLMv2 Hash Leak via COM+Auto-Execution
+
+Recent NTLMv2 Hash Leak advisor leverages built in windows COM objects & auto-execution paths to leak NTLM hashes without any payloads. 
+
+let Device =
+DeviceLogonEvents
+| where ActionType == 'LogonSuccess' and LogonType == 'Interactive'
+| distinct DeviceName;
+DeviceNetworkEvents
+| where RemotePort == '445' and RemoteIPType contains "public"
+| where ActionType contains "ConnectionSuccess"
+| where DeviceName has_any (Device)
