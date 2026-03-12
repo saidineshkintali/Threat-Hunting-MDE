@@ -1,0 +1,19 @@
+Notepad++ Hijacked by State-Sponsored Hackers
+
+The breach involved exploiting weak verification in older versions of the WinGUp updater via a hosting provider compromise. Hackers, suspected to be China-linked, 
+targeted the domain specifically without altering DNS records.
+
+Below is the KQL for detections:
+
+let version = dynamic(["8.8.9", "8.9", "8.9.1"]);
+let vul_ver=
+DeviceProcessEvents
+| where ActionType contains "ProcessCreated"
+| where InitiatingProcessVersionInfoInternalFileName contains "notepad++.exe"
+| summarize arg_max(Timestamp, *) by DeviceName
+| where (InitiatingProcessVersionInfoProductVersion has_any (version))
+| distinct DeviceName;
+DeviceNetworkEvents
+| where RemoteUrl contains "notepad-plus-plus.org"
+| where DeviceName has_any (vul_ver)
+| summarize arg_max(Timestamp, *) by DeviceName
