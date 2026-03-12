@@ -1,0 +1,10 @@
+Unusual outbound traffic originating from Windows service binaries has been detected from below hunt query these indicates signs of high risk.
+
+In many confirmed cases the components of a staged infection chain. The initial dropper self-deleted after leveraging LOLbins to download the subsequent payload.
+
+
+let process= dynamic(["mshta.exe", "regsvcs.exe", "wscript.exe", "attrib.exe", "wmic.exe"]);
+DeviceNetworkEvents
+| where InitiatingProcessVersionInfoInternalFileName has_any (process)
+| where RemoteIPType contains "public"
+| project Timestamp, DeviceName, ActionType, RemoteIP,InitiatingProcessVersionInfoInternalFileName
