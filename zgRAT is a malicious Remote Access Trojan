@@ -1,0 +1,8 @@
+zgRAT is a malicious Remote Access Trojan that allows attackers to secretly 
+take control of infected systems, steal sensitive data, and monitor user 
+activity—often delivered through phishing or malicious downloads.
+
+
+DeviceProcessEvents
+| where FileName has "dllhost.exe" and InitiatingProcessFileName contains "msbuild.exe"
+    and InitiatingProcessFolderPath contains "Start Menu\\Programs\\Startup"
