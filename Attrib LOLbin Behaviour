@@ -1,0 +1,10 @@
+attrib.exe is a legitimate Windows command-line utility used to view or change file attributes such as read-only,
+archive, system, and hidden. However, attackers often misuse this trusted tool as a living-off-the-land (LotL) 
+binary—leveraging built-in system utilities for malicious activity. A common abuse involves running attrib.exe with 
+specific switches, particularly +h (Hidden), to conceal files and evade user awareness and basic security controls.
+
+
+DeviceProcessEvents
+| where FileName contains "attrib.exe" and ProcessCommandLine contains "attrib +h"
+     and ProcessCommandLine has_any ("Temp", "ProgramData", "Startup", "AppData")
+     and InitiatingProcessFileName has_any ("node.exe", "powershell.exe", "cmd.exe", "python.exe" )
